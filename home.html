@@ -1,5 +1,5 @@
-
 <!--Simple application using fb js sdk.-->
+
 <!--This application let you collect userid,email,birthday,location of your application user- -->
 <!DOCTYPE html>
 
@@ -31,7 +31,7 @@
 
         FB.init({
 
-          appId      : '2071618246429273',
+          appId      : 'yourAppId',
 
           cookie     : true,
 
@@ -115,7 +115,15 @@
 
           }
 
-
+          // FB.api(
+          //   '/me',
+          //   'GET',
+          //   {"fields":"friends,birthday"},
+          //   function(response) {
+          //       if(response && !response.error){
+          //       buildFriendsList(response);
+          //   }
+          // });
 
           FB.api('/me/feed', function(response){
 
@@ -126,6 +134,16 @@
             }
 
           });
+
+  FB.api('/me/photos',
+  function(response) {
+    if(response && !response.error){
+
+      buildPhotos(response);
+
+    }
+  }
+);
 
         })
 
@@ -147,17 +165,73 @@
 
             <li class="list-group-item">Birthday: ${user.birthday}</li>
 
-            <li class="list-group-item">User ID: ${user.location.name}</li>
+            <li class="list-group-item">Location: ${user.location.name}</li>
 
           </ul>
 
         `;
-
-
-
         document.getElementById('profile').innerHTML = profile;
-
       }
+
+    //
+    //     function buildFriendsList(friends){
+    //       let result=`
+    //       <h1>List of Users Friends<h1>`
+    //       for(let i in friends.data )
+    //
+    //         if(friends.data[i]!=0){
+    //       result+=`
+    //       <ul class="list-group">
+    //
+    //         <li class="list-group-item">Friend name: ${friends.data[i].id}</li>
+    //
+    //         <li class="list-group-item">Location: ${friends.data[i].name}</li>
+    //
+    //       </ul>
+    //
+    //     `;
+    //   }
+    //
+    //   else{
+    //     console.log("not an authorized user to access these type of data");
+    //   }
+    //     document.getElementById('friends').innerHTML = result;
+    // }
+ function buildPhotos(photos)
+{
+  let res=`<h3> list of user photos details</h3>`;
+
+
+  for(let i in photos.data){
+
+    if(photos.data[i].name){
+
+      res += `
+
+
+
+        <ul class="list-group">
+
+          <li class="list-group-item">photo ID:   ${photos.data[i].id}</li>
+
+          <li class="list-group-item">Posted Time: ${photos.data[i].created_time}</li>
+
+          <li class="list-group-item">Photo Title: ${photos.data[i].name}</li>
+
+
+        </ul>
+
+
+`;
+}
+}
+document.getElementById('photos').innerHTML = res;
+
+}
+
+
+
+
 
 
 
@@ -199,7 +273,11 @@
 
           document.getElementById('profile').style.display = 'block';
 
-          document.getElementById('feed').style.display = 'block';
+          document.getElementById('friends').style.display = 'block';
+
+          document.getElementById('photos').style.display = 'block';
+
+          document.getElementById('feed').style.display = 'block'
 
           document.getElementById('fb-btn').style.display = 'none';
 
@@ -210,6 +288,10 @@
           document.getElementById('logout').style.display = 'none';
 
           document.getElementById('profile').style.display = 'none';
+
+          document.getElementById('friends').style.display = 'none';
+
+          document.getElementById('photos').style.display = 'none';
 
           document.getElementById('feed').style.display = 'none';
 
@@ -275,7 +357,7 @@
 
               id="fb-btn"
 
-              scope="public_profile,email,user_birthday,user_location,user_posts"
+              scope="public_profile,email,user_birthday,user_location,user_posts,user_friends"
 
               onlogin="checkLoginState();">
 
@@ -297,7 +379,13 @@
 
       <div id="profile"></div>
 
+      <div id="friends"></div>
+
+      <div id="photos"></div>
+
       <div id="feed"></div>
+
+
 
     </div>
 
